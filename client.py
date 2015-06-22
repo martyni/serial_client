@@ -1,7 +1,9 @@
 import serial
-
-ser = serial.Serial('/dev/ttyACM0', 9600)
-
+import os
+try:
+   ser = serial.Serial('/dev/ttyACM0', 115200)
+except:
+   ser = serial.Serial('/dev/ttyACM1', 115200)
 def read():
    return ser.readline()
 
@@ -16,7 +18,7 @@ def write_read(byte):
 if __name__ == "__main__":
    session = True
    while session:
-      arg = raw_input(">")
+      arg = raw_input("%s>> " % os.getlogin())
       if arg.lower() == "exit":
          session = False
       print write_read(arg)
