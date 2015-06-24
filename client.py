@@ -8,10 +8,11 @@ def read():
    return ser.readline()
 
 def write_read(byte):
-   if type(byte) == str and len(byte) == 1:
+   try:
+      int(byte)
       ser.write(byte)
-   else:
-      print "Only accepts single characters"
+   except:
+      print "Only accepts integers"
       ser.write('0')
    return read()
 
