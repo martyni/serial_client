@@ -1,3 +1,7 @@
+#include <Wire.h>
+#include <Adafruit_MotorShield.h>
+#include "utility/Adafruit_PWMServoDriver.h"
+
 const int ledPin = 13;
 int lineBuffer;
 char* toClient;
@@ -26,6 +30,8 @@ char* response(int arg) {
              return "Unknown arg";
     };
 };
+
+
 
 void loop(){
       
