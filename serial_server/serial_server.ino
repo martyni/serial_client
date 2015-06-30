@@ -2,46 +2,72 @@
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_PWMServoDriver.h"
 
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
+
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(2);
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+
 const int ledPin = 13;
 int lineBuffer;
-char* toClient;
+int motorSpeed = 100;
 
 void setup(){
    Serial.begin(9600);
    lineBuffer = 0;
    pinMode(ledPin, OUTPUT);
+   AFMS.begin(); 
+   leftMotor->setSpeed(motorSpeed);
+   rightMotor->setSpeed(motorSpeed);  
 }
 
-char* response(int arg) {
+void response(int arg) {
    switch (arg) {
         case 0 :
-             return "Null";
+             //null argument
+             break;
         case 1 :
-             return "Forward";
+             Serial.println("Forward!");
+             leftMotor->run(FORWARD);
+             rightMotor->run(FORWARD);
+             break;
         case 2 :
-             return "Backward";
+             Serial.println("Backward!");
+             leftMotor->run(BACKWARD);
+             rightMotor->run(BACKWARD);
+             break;
         case 3 :
-             return "Left";
+             Serial.println("Left?");
+             leftMotor->run(FORWARD);
+             rightMotor->run(BACKWARD);
+             break;
         case 4 :
-             return "Right";
+             Serial.println("Right?");
+             leftMotor->run(BACKWARD);
+             rightMotor->run(FORWARD);
+             break;
         case 5:
-             return "Distance";
+             Serial.println("Distance");
+             break;
+        case 6:
+             Serial.println("Stop!");
+             leftMotor->run(RELEASE);
+             rightMotor->run(RELEASE);       
+             break;
         default:
-             return "Unknown arg";
+             Serial.println("unknown");
+             break;
     };
 };
 
 
 
 void loop(){
-      
       if (Serial.available() > 0) {
          digitalWrite(ledPin, HIGH);
          lineBuffer = Serial.parseInt();
-         toClient = response(lineBuffer);
-         Serial.println(toClient);
-         digitalWrite(ledPin, LOW);         
-      };
+         response(lineBuffer);
+         digitalWrite(ledPin, LOW); 
+         };
 };
 
 
