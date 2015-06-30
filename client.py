@@ -62,8 +62,8 @@ class Robot(object):
 
    def start_session(self):
       while self.session:
-         self.verbose_print(self.do, self.arg, self.info)
          self.arg = raw_input("%s%s " % (self.user, self.pointer(self.last_arg)))
+         self.verbose_print(self.do, self.question, self.info, self.arg, self.last_arg)
          print write_read(self.arg)
          if self.arg == "exit":
             self.session = False
@@ -74,6 +74,6 @@ class Robot(object):
 if __name__ == "__main__":
    session = True
    [pprint(read()) for _ in range(2)] #empty serial bus 
-   my_bot = Robot(get_commands())
+   my_bot = Robot(get_commands(), verbose=True)
    my_bot.start_session()
    
