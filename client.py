@@ -49,7 +49,7 @@ class Robot(object):
       self.user = os.getlogin()
       self.last_arg = "dummy"
       self.arg = None
-   
+      self.args = []
    def verbose_print(self, *say):
       if self.verbose:
          pprint(say) 
@@ -59,10 +59,13 @@ class Robot(object):
          return ".." if int(arg) in self.question else ">>"   
       except:
          return ">>"
+   
 
    def start_session(self):
       while self.session:
-         self.arg = raw_input("%s%s " % (self.user, self.pointer(self.last_arg)))
+         if not self.args:
+            self.args = raw_input("%s%s " % (self.user, self.pointer(self.last_arg))).split(",")[::-1]
+         self.arg = self.args.pop()
          self.verbose_print(self.do, self.question, self.info, self.arg, self.last_arg)
          print write_read(self.arg)
          if self.arg == "exit":
