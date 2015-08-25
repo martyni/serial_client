@@ -35,7 +35,7 @@ def get_commands():
       command_tree[command] = outcome 
       command += 1
       print ".",
-   pprint(command_tree)
+      pprint(command_tree)
    return command_tree
 
 class Robot(object):
