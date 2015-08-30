@@ -11,6 +11,8 @@ const int ledPin = 13;
 int lineBuffer;
 int motorSpeed = 50;
 int time;
+int last = 0;
+int second = 1600;
 void setup(){
    Serial.begin(9600);
    lineBuffer = 0;
@@ -20,50 +22,44 @@ void setup(){
    rightMotor->setSpeed(motorSpeed);  
 }
 
-void response(int arg) {
+int response(int arg) {
    switch (arg) {
         case 0 :
              //null argument
-             break;
+             return 0;
         case 1 :
              Serial.println("Forward!");
              leftMotor->run(FORWARD);
              rightMotor->run(FORWARD);
-             break;
+             return second;
         case 2 :
              Serial.println("Backward!");
              leftMotor->run(BACKWARD);
              rightMotor->run(BACKWARD);
-             break;
+             return second;
         case 3 :
              Serial.println("Left?");
              time = readData();
              leftMotor->run(FORWARD);
              rightMotor->run(BACKWARD);
-             delay(time);
-             leftMotor->run(RELEASE);
-             rightMotor->run(RELEASE); 
-             break;
+             return second * time;
         case 4 :
              Serial.println("Right?");
              time = readData();
              leftMotor->run(BACKWARD);
              rightMotor->run(FORWARD);
-             delay(time);
-             leftMotor->run(RELEASE);
-             rightMotor->run(RELEASE);              ;
-             break;
+             return second * time;
         case 5:
              Serial.println("Distance");
-             break;
+             return 0;
         case 6:
              Serial.println("Stop!");
              leftMotor->run(RELEASE);
              rightMotor->run(RELEASE);       
-             break;
+             return 0;
         default:
              Serial.println("Unknown");
-             break;
+             return 0;
     };
 };
 
@@ -77,12 +73,15 @@ int readData(){
 }
 
 void loop(){
-      if (Serial.available() > 0) {
+      if (Serial.available() > 0 and last == 0) {
          digitalWrite(ledPin, HIGH);
          lineBuffer = Serial.parseInt();
-         response(lineBuffer);
+         last = response(lineBuffer);
          digitalWrite(ledPin, LOW); 
          };
+      if (last > 0) {
+        last = last -1;
+      };   
 };
 
 
