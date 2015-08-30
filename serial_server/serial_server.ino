@@ -5,14 +5,14 @@
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 
 Adafruit_DCMotor *rightMotor = AFMS.getMotor(2);
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(1);
 
 const int ledPin = 13;
 int lineBuffer;
-int motorSpeed = 50;
+int motorSpeed = 100;
 int time;
 int last = 0;
-int second = 1600;
+int second = 32000;
 void setup(){
    Serial.begin(9600);
    lineBuffer = 0;
@@ -53,9 +53,7 @@ int response(int arg) {
              Serial.println("Distance");
              return 0;
         case 6:
-             Serial.println("Stop!");
-             leftMotor->run(RELEASE);
-             rightMotor->run(RELEASE);       
+             Serial.println("Stop!");   
              return 0;
         default:
              Serial.println("Unknown");
@@ -73,7 +71,7 @@ int readData(){
 }
 
 void loop(){
-      if (Serial.available() > 0 and last == 0) {
+      if (Serial.available() > 0) {
          digitalWrite(ledPin, HIGH);
          lineBuffer = Serial.parseInt();
          last = response(lineBuffer);
@@ -81,6 +79,10 @@ void loop(){
          };
       if (last > 0) {
         last = last -1;
+      }else if (last == 0) {
+        leftMotor->run(RELEASE);
+        rightMotor->run(RELEASE);  
+        last = -1;  
       };   
 };
 
